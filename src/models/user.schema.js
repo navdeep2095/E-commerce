@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import authRoles from '../utils/authRoles.js';
-
+import bcrypt from 'bcryptjs';
 const userSchema = mongoose.Schema(
     {
         name: {
@@ -30,5 +30,20 @@ const userSchema = mongoose.Schema(
         timestamps: true
     }
 );
+
+// Encrypt the password before saving it on mongoDB(mongoose hook)
+userSchema.pre("save", async function(){
+    if(!this.isModified("password")) return next();
+    this.password = await bcrypt.hash(this.password,10);
+    return next();
+});
+
+// Writing custom methods for user schema
+userSchema.methods = {
+    // comparing user password and saved password in MONGODB
+    compare: async function(userPassword) {
+        return await bcrypt.compare(userPassword, this.password);
+    }
+}
 
 export default mongoose.model("User",userSchema);
