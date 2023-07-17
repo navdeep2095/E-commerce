@@ -38,6 +38,7 @@ const productSchema = mongoose.Schema(
         },
         // product belongs to particular category in collection schema so productSchema is refering to collectionSchema.
         collectionId: {
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Collection"
         }
     },
@@ -46,4 +47,4 @@ const productSchema = mongoose.Schema(
     }
 );
 
-export default mongoose.models("Product",productSchema);
+export default mongoose.model("Product",productSchema);
